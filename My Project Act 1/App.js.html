@@ -1,0 +1,202 @@
+<html>
+<head>
+<title>App.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #6aab73;}
+.s2 { color: #cf8e6d;}
+.s3 { color: #7a7e85;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+App.js</font>
+</center></td></tr></table>
+<pre><span class="s0">import React, { useState } from </span><span class="s1">'react'</span><span class="s0">;</span>
+<span class="s0">import { View, Text, TextInput, Button, FlatList, StyleSheet, ImageBackground, TouchableOpacity, Alert } from </span><span class="s1">'react-native'</span><span class="s0">;</span>
+
+<span class="s0">const backgroundImage = { uri: </span><span class="s1">'https://c4.wallpaperflare.com/wallpaper/716/377/125/sci-fi-city-blue-building-wallpaper-preview.jpg' </span><span class="s0">};</span>
+
+<span class="s0">const App = () =&gt; {</span>
+  <span class="s0">const [name, setName] = useState(</span><span class="s1">''</span><span class="s0">);</span>
+  <span class="s0">const [age, setAge] = useState(</span><span class="s1">''</span><span class="s0">);</span>
+  <span class="s0">const [birthdate, setBirthdate] = useState(</span><span class="s1">''</span><span class="s0">);</span>
+  <span class="s0">const [address, setAddress] = useState(</span><span class="s1">''</span><span class="s0">);</span>
+  <span class="s0">const [editingItem, setEditingItem] = useState(</span><span class="s2">null</span><span class="s0">);</span>
+  <span class="s0">const [studentList, setStudentList] = useState([]);</span>
+
+  <span class="s0">const addStudent = () =&gt; {</span>
+    <span class="s2">if </span><span class="s0">(name &amp;&amp; age) {</span>
+      <span class="s2">if </span><span class="s0">(editingItem) {</span>
+        <span class="s3">// Show confirmation box before editing</span>
+        <span class="s0">Alert.alert(</span>
+          <span class="s1">'Confirm Edit'</span><span class="s0">,</span>
+          <span class="s1">'Are you sure you want to edit this information?'</span><span class="s0">,</span>
+          <span class="s0">[</span>
+            <span class="s0">{</span>
+              <span class="s0">text: </span><span class="s1">'Cancel'</span><span class="s0">,</span>
+              <span class="s0">style: </span><span class="s1">'cancel'</span><span class="s0">,</span>
+            <span class="s0">},</span>
+            <span class="s0">{</span>
+              <span class="s0">text: </span><span class="s1">'OK'</span><span class="s0">,</span>
+              <span class="s0">onPress: () =&gt; {</span>
+                <span class="s3">// Edit existing data</span>
+                <span class="s0">setStudentList((prevList) =&gt;</span>
+                  <span class="s0">prevList.map((item) =&gt;</span>
+                    <span class="s0">item.id === editingItem.id</span>
+                      <span class="s0">? { ...item, name, age, birthdate, address }</span>
+                      <span class="s0">: item</span>
+                  <span class="s0">)</span>
+                <span class="s0">);</span>
+                <span class="s0">setEditingItem(</span><span class="s2">null</span><span class="s0">);</span>
+
+                <span class="s0">setName(</span><span class="s1">''</span><span class="s0">);</span>
+                <span class="s0">setAge(</span><span class="s1">''</span><span class="s0">);</span>
+                <span class="s0">setBirthdate(</span><span class="s1">''</span><span class="s0">);</span>
+                <span class="s0">setAddress(</span><span class="s1">''</span><span class="s0">);</span>
+              <span class="s0">},</span>
+            <span class="s0">},</span>
+          <span class="s0">],</span>
+          <span class="s0">{ cancelable: </span><span class="s2">false </span><span class="s0">}</span>
+        <span class="s0">);</span>
+      <span class="s0">} </span><span class="s2">else </span><span class="s0">{</span>
+        <span class="s3">// Add new data</span>
+        <span class="s0">setStudentList((prevList) =&gt; [</span>
+          <span class="s0">...prevList,</span>
+          <span class="s0">{ id: Math.random().toString(), name, age, birthdate, address },</span>
+        <span class="s0">]);</span>
+
+        <span class="s0">setName(</span><span class="s1">''</span><span class="s0">);</span>
+        <span class="s0">setAge(</span><span class="s1">''</span><span class="s0">);</span>
+        <span class="s0">setBirthdate(</span><span class="s1">''</span><span class="s0">);</span>
+        <span class="s0">setAddress(</span><span class="s1">''</span><span class="s0">);</span>
+      <span class="s0">}</span>
+    <span class="s0">}</span>
+  <span class="s0">};</span>
+
+  <span class="s0">const deleteStudent = (id) =&gt; {</span>
+    <span class="s0">setStudentList((prevList) =&gt; prevList.filter((item) =&gt; item.id !== id));</span>
+  <span class="s0">};</span>
+
+  <span class="s0">const editStudent = (item) =&gt; {</span>
+    <span class="s0">setEditingItem(item);</span>
+    <span class="s0">setName(item.name);</span>
+    <span class="s0">setAge(item.age);</span>
+    <span class="s0">setBirthdate(item.birthdate);</span>
+    <span class="s0">setAddress(item.address);</span>
+  <span class="s0">};</span>
+
+  <span class="s2">return </span><span class="s0">(</span>
+    <span class="s0">&lt;ImageBackground source={backgroundImage} style={styles.backgroundImage}&gt;</span>
+      <span class="s0">&lt;View style={styles.container}&gt;</span>
+        <span class="s0">&lt;Text style={styles.title}&gt;SServUserDataList&lt;/Text&gt;</span>
+        <span class="s0">&lt;View style={styles.formContainer}&gt;</span>
+          <span class="s0">&lt;Text style={styles.label}&gt;Name:&lt;/Text&gt;</span>
+          <span class="s0">&lt;TextInput</span>
+            <span class="s0">style={styles.input}</span>
+            <span class="s0">value={name}</span>
+            <span class="s0">onChangeText={(text) =&gt; setName(text)}</span>
+          <span class="s0">/&gt;</span>
+          <span class="s0">&lt;Text style={styles.label}&gt;Age:&lt;/Text&gt;</span>
+          <span class="s0">&lt;TextInput</span>
+            <span class="s0">style={styles.input}</span>
+            <span class="s0">value={age}</span>
+            <span class="s0">onChangeText={(text) =&gt; setAge(text)}</span>
+            <span class="s0">keyboardType=</span><span class="s1">&quot;numeric&quot;</span>
+          <span class="s0">/&gt;</span>
+          <span class="s0">&lt;Text style={styles.label}&gt;Birthdate:&lt;/Text&gt;</span>
+          <span class="s0">&lt;TextInput</span>
+            <span class="s0">style={styles.input}</span>
+            <span class="s0">value={birthdate}</span>
+            <span class="s0">onChangeText={(text) =&gt; setBirthdate(text)}</span>
+          <span class="s0">/&gt;</span>
+          <span class="s0">&lt;Text style={styles.label}&gt;Address:&lt;/Text&gt;</span>
+          <span class="s0">&lt;TextInput</span>
+            <span class="s0">style={styles.input}</span>
+            <span class="s0">value={address}</span>
+            <span class="s0">onChangeText={(text) =&gt; setAddress(text)}</span>
+          <span class="s0">/&gt;</span>
+          <span class="s0">&lt;Button title={editingItem ? </span><span class="s1">'Update User Info' </span><span class="s0">: </span><span class="s1">'Add User Information'</span><span class="s0">} onPress={addStudent} color=</span><span class="s1">&quot;#50C878&quot; </span><span class="s0">/&gt;</span>
+        <span class="s0">&lt;/View&gt;</span>
+
+        <span class="s0">&lt;View style={styles.displayContainer}&gt;</span>
+          <span class="s0">&lt;Text style={styles.displayLabel}&gt;User Information:&lt;/Text&gt;</span>
+          <span class="s0">&lt;FlatList</span>
+            <span class="s0">data={studentList}</span>
+            <span class="s0">keyExtractor={(item) =&gt; item.id}</span>
+            <span class="s0">renderItem={({ item }) =&gt; (</span>
+              <span class="s0">&lt;View style={styles.studentItem}&gt;</span>
+                <span class="s0">&lt;Text&gt;Name: {item.name}&lt;/Text&gt;</span>
+                <span class="s0">&lt;Text&gt;Age: {item.age}&lt;/Text&gt;</span>
+                <span class="s0">&lt;Text&gt;Birthdate: {item.birthdate}&lt;/Text&gt;</span>
+                <span class="s0">&lt;Text&gt;Address: {item.address}&lt;/Text&gt;</span>
+                <span class="s0">&lt;View style={{ flexDirection: </span><span class="s1">'row'</span><span class="s0">, justifyContent: </span><span class="s1">'space-between' </span><span class="s0">}}&gt;</span>
+                  <span class="s0">&lt;TouchableOpacity onPress={() =&gt; editStudent(item)}&gt;</span>
+                    <span class="s0">&lt;Text style={{ color: </span><span class="s1">'blue' </span><span class="s0">}}&gt;Edit&lt;/Text&gt;</span>
+                  <span class="s0">&lt;/TouchableOpacity&gt;</span>
+                  <span class="s0">&lt;TouchableOpacity onPress={() =&gt; deleteStudent(item.id)}&gt;</span>
+                    <span class="s0">&lt;Text style={{ color: </span><span class="s1">'red' </span><span class="s0">}}&gt;Delete&lt;/Text&gt;</span>
+                  <span class="s0">&lt;/TouchableOpacity&gt;</span>
+                <span class="s0">&lt;/View&gt;</span>
+              <span class="s0">&lt;/View&gt;</span>
+            <span class="s0">)}</span>
+          <span class="s0">/&gt;</span>
+        <span class="s0">&lt;/View&gt;</span>
+      <span class="s0">&lt;/View&gt;</span>
+    <span class="s0">&lt;/ImageBackground&gt;</span>
+  <span class="s0">);</span>
+<span class="s0">};</span>
+
+<span class="s0">const styles = StyleSheet.create({</span>
+  <span class="s0">backgroundImage: {</span>
+    <span class="s0">flex: </span><span class="s4">1</span><span class="s0">,</span>
+    <span class="s0">resizeMode: </span><span class="s1">'cover'</span><span class="s0">,</span>
+    <span class="s0">justifyContent: </span><span class="s1">'center'</span><span class="s0">,</span>
+  <span class="s0">},</span>
+  <span class="s0">container: {</span>
+    <span class="s0">flex: </span><span class="s4">1</span><span class="s0">,</span>
+    <span class="s0">padding: </span><span class="s4">20</span><span class="s0">,</span>
+    <span class="s0">backgroundColor: </span><span class="s1">'rgba(255,255,255,0.7)'</span><span class="s0">,</span>
+  <span class="s0">},</span>
+  <span class="s0">title: {</span>
+    <span class="s0">fontSize: </span><span class="s4">35</span><span class="s0">,</span>
+    <span class="s0">fontWeight: </span><span class="s1">'bold'</span><span class="s0">,</span>
+    <span class="s0">marginBottom: </span><span class="s4">20</span><span class="s0">,</span>
+  <span class="s0">},</span>
+  <span class="s0">formContainer: {</span>
+    <span class="s0">marginBottom: </span><span class="s4">20</span><span class="s0">,</span>
+  <span class="s0">},</span>
+  <span class="s0">label: {</span>
+    <span class="s0">fontSize: </span><span class="s4">18</span><span class="s0">,</span>
+    <span class="s0">marginBottom: </span><span class="s4">5</span><span class="s0">,</span>
+  <span class="s0">},</span>
+  <span class="s0">input: {</span>
+    <span class="s0">height: </span><span class="s4">40</span><span class="s0">,</span>
+    <span class="s0">borderColor: </span><span class="s1">'black'</span><span class="s0">,</span>
+    <span class="s0">borderWidth: </span><span class="s4">1</span><span class="s0">,</span>
+    <span class="s0">marginBottom: </span><span class="s4">10</span><span class="s0">,</span>
+    <span class="s0">paddingHorizontal: </span><span class="s4">10</span><span class="s0">,</span>
+  <span class="s0">},</span>
+  <span class="s0">displayContainer: {</span>
+    <span class="s0">flex: </span><span class="s4">1</span><span class="s0">,</span>
+  <span class="s0">},</span>
+  <span class="s0">displayLabel: {</span>
+    <span class="s0">fontSize: </span><span class="s4">20</span><span class="s0">,</span>
+    <span class="s0">marginBottom: </span><span class="s4">10</span><span class="s0">,</span>
+  <span class="s0">},</span>
+  <span class="s0">studentItem: {</span>
+    <span class="s0">marginBottom: </span><span class="s4">10</span><span class="s0">,</span>
+    <span class="s0">padding: </span><span class="s4">10</span><span class="s0">,</span>
+    <span class="s0">borderColor: </span><span class="s1">'gray'</span><span class="s0">,</span>
+    <span class="s0">borderWidth: </span><span class="s4">1</span><span class="s0">,</span>
+  <span class="s0">},</span>
+<span class="s0">});</span>
+
+<span class="s0">export </span><span class="s2">default </span><span class="s0">App;</span>
+</pre>
+</body>
+</html>
